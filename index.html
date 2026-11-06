@@ -174,10 +174,10 @@ ul,ol{padding:0;list-style:none}
 <main class="wrap">
   <div id="form" class="grid">
     <section class="card list">
-      <h1 class="title">Test savollari</h1>
-      <p class="sub">Test kodi: <b id="code">—</b> · 49 ta savol</p>
+      <h1 class="title" id="ttl">Test savollari</h1>
+      <p class="sub" id="sub"></p>
       <div id="rows"></div>
-      <div class="essay">
+      <div class="essay" id="essay-box">
         <label for="essay">Esse ballingizni kiriting <span class="hint" style="font-weight:500;color:var(--muted)">(75 ballik shkalada)</span></label>
         <input id="essay" type="text" inputmode="numeric" placeholder="Masalan: 65" autocomplete="off">
       </div>
@@ -216,34 +216,43 @@ ul,ol{padding:0;list-style:none}
     try { tg.ready(); tg.expand(); if (tg.colorScheme) document.documentElement.setAttribute('data-theme', tg.colorScheme); } catch (e) {}
   }
   var params = new URLSearchParams(location.search);
+  var MODE = params.get('mode') === 'key' ? 'key' : 'answer';
+  var TPL = params.get('tpl') === 'att' ? 'att' : 'rasch';
   var CODE = (params.get('code') || '').replace(/[^\d]/g, '').slice(0, 9);
-  var LS = 'tilsim-varaq-' + (CODE || 'x');
+  var NAME = (params.get('name') || 'Test').slice(0, 60);
+  var LS = 'tilsim-varaq-' + MODE + '-' + TPL + '-' + (MODE === 'key' ? 'draft' : (CODE || 'x'));
 
   var ITEMS = [], i, n;
-  for (i = 1; i <= 35; i++) ITEMS.push({ id: String(i), type: 'mc', opts: i <= 32 ? 4 : 6 });
-  for (i = 36; i <= 39; i++) ITEMS.push({ id: String(i), type: 'open' });
-  for (n = 40; n <= 44; n++) { ITEMS.push({ id: n + 'a', type: 'open' }); ITEMS.push({ id: n + 'b', type: 'open' }); }
+  if (TPL === 'att') {
+    for (i = 1; i <= 50; i++) ITEMS.push({ id: String(i), type: 'mc', opts: 4 });
+  } else {
+    for (i = 1; i <= 35; i++) ITEMS.push({ id: String(i), type: 'mc', opts: i <= 32 ? 4 : 6 });
+    for (i = 36; i <= 39; i++) ITEMS.push({ id: String(i), type: 'open' });
+    for (n = 40; n <= 44; n++) { ITEMS.push({ id: n + 'a', type: 'open' }); ITEMS.push({ id: n + 'b', type: 'open' }); }
+  }
   var L = 'ABCDEF';
+  var HAS_ESSAY = TPL === 'rasch' && MODE === 'answer';
 
   function $(s) { return document.querySelector(s); }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
   var A = {}, essay = '', sent = false;
-  function load() { try { var o = JSON.parse(localStorage.getItem(LS)); if (o) { A = o.A || {}; essay = o.essay || ''; sent = !!o.sent; } } catch (e) {} }
+  function load() { try { var o = JSON.parse(localStorage.getItem(LS)); if (o) { A = o.A || {}; essay = o.essay || ''; sent = MODE === 'answer' && !!o.sent; } } catch (e) {} }
   function save() { try { localStorage.setItem(LS, JSON.stringify({ A: A, essay: essay, sent: sent })); } catch (e) {} }
+  function wipe() { try { localStorage.removeItem(LS); } catch (e) {} }
 
   function renderRows() {
-    var h = '';
+    var h = '', ph = MODE === 'key' ? 'To‘g‘ri javobni kiriting' : 'Javobni kiriting';
     ITEMS.forEach(function (it) {
-      if (it.id === '1') h += '<div class="sec-h"><h2>Yopiq savollar</h2><span>1–35</span></div>';
-      if (it.id === '36') h += '<div class="sec-h"><h2>Ochiq savollar</h2><span>36–44b · javobni o‘zingiz yozasiz</span></div>';
+      if (it.id === '1') h += '<div class="sec-h"><h2>' + (TPL === 'att' ? 'Savollar' : 'Yopiq savollar') + '</h2><span>' + (TPL === 'att' ? '1–50' : '1–35') + '</span></div>';
+      if (it.id === '36') h += '<div class="sec-h"><h2>Ochiq savollar</h2><span>36–44b · ' + (MODE === 'key' ? 'to‘g‘ri javobni yozing' : 'javobni o‘zingiz yozasiz') + '</span></div>';
       h += '<div class="row" id="r-' + it.id + '"><div class="num">' + it.id + '.</div>';
       if (it.type === 'mc') {
         h += '<div class="opts" role="group" aria-label="' + it.id + '-savol">';
         for (var j = 0; j < it.opts; j++) h += '<button type="button" class="opt" data-id="' + it.id + '" data-v="' + L[j] + '" aria-pressed="' + (A[it.id] === L[j]) + '">' + L[j] + '</button>';
         h += '</div>';
       } else {
-        h += '<input class="txt' + (A[it.id] ? ' has' : '') + '" data-id="' + it.id + '" type="text" maxlength="60" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Javobni kiriting" aria-label="' + it.id + '-savol javobi" value="' + esc(A[it.id] || '') + '">';
+        h += '<input class="txt' + (A[it.id] ? ' has' : '') + '" data-id="' + it.id + '" type="text" maxlength="60" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + ph + '" aria-label="' + it.id + '-savol javobi" value="' + esc(A[it.id] || '') + '">';
       }
       h += '</div>';
     });
@@ -297,28 +306,54 @@ ul,ol{padding:0;list-style:none}
     $('#panel-h').setAttribute('aria-expanded', String(o));
   });
 
+  function missing() { return ITEMS.filter(function (it) { return !A[it.id]; }); }
+
   function openModal() {
-    var left = ITEMS.filter(function (it) { return !A[it.id]; }).length;
-    $('#mbody').innerHTML =
-      '<div class="mrow"><span>Javob berilmagan</span><b>' + left + ' ta</b></div>' +
-      '<div class="mrow"><span>Esse bali</span><b>' + (essay !== '' ? essay + ' / 75' : 'kiritilmagan') + '</b></div>' +
-      '<p style="font-size:.9rem;color:var(--muted)">Yuborgandan keyin javoblarni o‘zgartirib bo‘lmaydi.</p>';
+    var left = missing().length, h = '';
+    if (MODE === 'key') {
+      h = '<div class="mrow"><span>Belgilanmagan kalit</span><b>' + left + ' ta</b></div>' +
+        (left ? '<p style="font-size:.9rem;color:var(--muted)">Test yaratish uchun barcha savollarning to‘g‘ri javobi belgilanishi kerak.</p>'
+              : '<p style="font-size:.9rem;color:var(--muted)">Kalitlar yuborilgach, bot test kodini beradi.</p>');
+      $('#mt').textContent = left ? 'Kalitlar to‘liq emas' : 'Kalitlarni saqlaysizmi?';
+      $('#m-yes').hidden = left > 0;
+      $('#m-yes').textContent = 'Ha, saqlash';
+      $('#m-no').textContent = left ? 'Davom etish' : 'Qaytish';
+    } else {
+      h = '<div class="mrow"><span>Javob berilmagan</span><b>' + left + ' ta</b></div>' +
+        (HAS_ESSAY ? '<div class="mrow"><span>Esse bali</span><b>' + (essay !== '' ? essay + ' / 75' : 'kiritilmagan') + '</b></div>' : '') +
+        '<p style="font-size:.9rem;color:var(--muted)">Yuborgandan keyin javoblarni o‘zgartirib bo‘lmaydi.</p>';
+      $('#mt').textContent = 'Testni yakunlaysizmi?';
+      $('#m-yes').hidden = false;
+      $('#m-yes').textContent = 'Ha, yakunlash';
+      $('#m-no').textContent = 'Qaytish';
+    }
+    $('#mbody').innerHTML = h;
     $('#modal').hidden = false;
-    $('#m-yes').focus();
+    (left && MODE === 'key' ? $('#m-no') : $('#m-yes')).focus();
   }
   function closeModal() { $('#modal').hidden = true; }
   $('#finish').addEventListener('click', function () {
-    if (!inTg || !CODE) { showInfo(); return; }
+    if (!inTg || (MODE === 'answer' && !CODE)) { showInfo(); return; }
     openModal();
   });
-  $('#m-no').addEventListener('click', closeModal);
+  $('#m-no').addEventListener('click', function () {
+    var first = MODE === 'key' ? missing()[0] : null;
+    closeModal();
+    if (first) { var r = document.getElementById('r-' + first.id); if (r) r.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  });
   $('#modal').addEventListener('click', function (e) { if (e.target.id === 'modal') closeModal(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#modal').hidden) closeModal(); });
 
   $('#m-yes').addEventListener('click', function () {
     closeModal();
-    var payload = { c: CODE, a: A, e: essay === '' ? null : parseInt(essay, 10) };
-    sent = true; save();
+    var payload;
+    if (MODE === 'key') {
+      payload = { m: 'key', t: TPL, n: NAME, a: A };
+      wipe();
+    } else {
+      payload = { c: CODE, a: A, e: HAS_ESSAY && essay !== '' ? parseInt(essay, 10) : null };
+      sent = true; save();
+    }
     showSent();
     try { tg.sendData(JSON.stringify(payload)); } catch (err) {}
   });
@@ -326,19 +361,31 @@ ul,ol{padding:0;list-style:none}
   function showSent() {
     $('#form').hidden = true;
     $('#result').hidden = false;
-    $('#result').innerHTML = '<div class="card sent"><h2>Javoblaringiz yuborildi</h2><p>Natija bot orqali Telegram chatiga keladi. Bu oynani yopishingiz mumkin.</p></div>';
+    $('#result').innerHTML = MODE === 'key'
+      ? '<div class="card sent"><h2>Kalitlar yuborildi</h2><p>Test yaratildi. Test kodi bot orqali Telegram chatiga keladi. Bu oynani yopishingiz mumkin.</p></div>'
+      : '<div class="card sent"><h2>Javoblaringiz yuborildi</h2><p>Natija bot orqali Telegram chatiga keladi. Bu oynani yopishingiz mumkin.</p></div>';
     window.scrollTo(0, 0);
   }
   function showInfo() {
-    $('#mbody').innerHTML = '<p>Bu varaq faqat Telegram bot orqali, test kodi bilan ochiladi. Botdagi <b>“Varaq bilan ishlash”</b> tugmasidan foydalaning.</p>';
+    $('#mbody').innerHTML = '<p>Bu varaq faqat Telegram bot orqali ochiladi. Botdagi <b>“Varaq bilan ishlash”</b> yoki <b>“Kalit varag‘ini ochish”</b> tugmasidan foydalaning.</p>';
     $('#mt').textContent = 'Telegram orqali oching';
     $('#m-yes').hidden = true;
     $('#m-no').textContent = 'Yopish';
     $('#modal').hidden = false;
   }
 
+  /* ---------- sarlavhalar ---------- */
+  if (MODE === 'key') {
+    $('#ttl').textContent = 'Kalit varag‘i';
+    $('#sub').innerHTML = 'Test: <b>' + esc(NAME) + '</b> · ' + ITEMS.length + ' ta savol · to‘g‘ri javoblarni belgilang';
+    $('#finish').textContent = '✓ Kalitlarni saqlash';
+    $('#top-t').textContent = 'Test yaratish';
+  } else {
+    $('#sub').innerHTML = 'Test kodi: <b>' + (CODE || '—') + '</b> · ' + ITEMS.length + ' ta savol';
+  }
+  $('#essay-box').hidden = !HAS_ESSAY;
+
   load();
-  $('#code').textContent = CODE || '—';
   renderRows();
   renderPanel();
   if (sent) showSent();
