@@ -211,7 +211,7 @@ ul,ol{padding:0;list-style:none}
 (function () {
   'use strict';
   var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-  var inTg = !!(tg && tg.initData);
+  var inTg = !!(tg && typeof tg.sendData === 'function' && tg.platform && tg.platform !== 'unknown');
   if (tg) {
     try { tg.ready(); tg.expand(); if (tg.colorScheme) document.documentElement.setAttribute('data-theme', tg.colorScheme); } catch (e) {}
   }
