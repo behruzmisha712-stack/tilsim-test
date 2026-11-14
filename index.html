@@ -247,13 +247,16 @@ ul,ol{padding:0;list-style:none}
   }
   var params = new URLSearchParams(location.search);
   var MODE = params.get('mode') === 'key' ? 'key' : 'answer';
-  var TPL = params.get('tpl') === 'att' ? 'att' : 'rasch';
+  var TPL = params.get('tpl') === 'att' ? 'att' : (params.get('tpl') === 'trad' ? 'trad' : 'rasch');
+  var Q = Math.max(1, Math.min(100, parseInt(params.get('q'), 10) || 20));
   var CODE = (params.get('code') || '').replace(/[^\d]/g, '').slice(0, 9);
   var NAME = (params.get('name') || 'Test').slice(0, 60);
-  var LS = 'tilsim-varaq-' + MODE + '-' + TPL + '-' + (MODE === 'key' ? 'draft' : (CODE || 'x'));
+  var LS = 'tilsim-varaq-' + MODE + '-' + TPL + '-' + (MODE === 'key' ? 'draft' + (TPL === 'trad' ? '-' + Q : '') : (CODE || 'x'));
 
   var ITEMS = [], i, n;
-  if (TPL === 'att') {
+  if (TPL === 'trad') {
+    for (i = 1; i <= Q; i++) ITEMS.push({ id: String(i), type: 'mc', opts: 4 });
+  } else if (TPL === 'att') {
     for (i = 1; i <= 50; i++) ITEMS.push({ id: String(i), type: 'mc', opts: 4 });
   } else {
     for (i = 1; i <= 35; i++) ITEMS.push({ id: String(i), type: 'mc', opts: i <= 32 ? 4 : 6 });
@@ -278,7 +281,7 @@ ul,ol{padding:0;list-style:none}
         if (it.id === '1') h += '<div class="sec-h"><h2>Asosiy fan</h2><span>1–35</span></div>';
         if (it.id === '36') h += '<div class="sec-h"><h2>Kasbiy standart</h2><span>36–40</span></div>';
         if (it.id === '41') h += '<div class="sec-h"><h2>Pedagogik mahorat</h2><span>41–50</span></div>';
-      } else {
+      } else if (TPL === 'rasch') {
         if (it.id === '1') h += '<div class="sec-h"><h2>Yopiq savollar</h2><span>1–35</span></div>';
         if (it.id === '36') h += '<div class="sec-h"><h2>Ochiq savollar</h2><span>36–44b · ' + (MODE === 'key' ? 'to‘g‘ri javobni yozing' : 'javobni o‘zingiz yozasiz') + '</span></div>';
       }
@@ -409,6 +412,7 @@ ul,ol{padding:0;list-style:none}
         tp[it.id] = ix;
       });
       payload = { m: 'key', t: TPL, n: NAME, a: A };
+      if (TPL === 'trad') payload.q = Q;
       if (tl.length) { payload.tl = tl; payload.tp = tp; }
       wipe();
     } else {
