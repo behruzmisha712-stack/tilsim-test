@@ -6,44 +6,47 @@
 <title>TILSIM TEST Javoblar varag‘i</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,600;6..72,700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-/* TILSIM TEST javoblar varag'i (mini ilova namunasi)
+/* TILSIM TEST javoblar varag'i (mini ilova)
    Tuzilma: 1-32 (A-D), 33-35 (A-F), 36-39 va 40a-44b ochiq javob, esse bali (0-75).
-   Palette: binafsha (tanlangan javob, sarlavha), oltin (joriy holat, yakunlash), iliq oq fon.
-   Rang farqlash ishonchli bo'lishi uchun to'g'ri/xato belgisi ✓ ✗ bilan beriladi. */
+   Palette platforma bilan bir xil: to'q ko'k (sarlavha, tanlangan javob) va oltin (aksent, yakunlash).
+   Kalit varag'i: belgilanmagan variant oq, belgilangan kalit yashil (✓ belgisi bilan). */
 :root{
-  --f-body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --f-display:'Newsreader',Georgia,'Times New Roman',serif;
+  --f-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-display:'Playfair Display',Georgia,'Times New Roman',serif;
   --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
-  --bg:#f6f2f8; --surface:#ffffff; --surface-2:#faf7fc;
-  --ink:#241530; --muted:#6a5c78; --line:#e1d8e9;
-  --head:#3f2559; --head-ink:#ffffff; --head-muted:#cdbde0;
-  --accent:#3f2559; --accent-ink:#ffffff; --sel:#f0e8f7;
-  --gold:#c4922a; --gold-ink:#2a1d02; --gold-soft:#fbf0d6;
-  --ok:#7a5208; --ok-soft:#fbf0d6; --bad:#3f2559; --bad-soft:#ece3f5;
+  --bg:#f2f5fb; --surface:#ffffff; --surface-2:#eef2fa;
+  --ink:#0f1c3a; --muted:#5a6784; --line:#d5ddee;
+  --head:#071433; --head-ink:#ffffff; --head-muted:#b9c6e6;
+  --accent:#173a8c; --accent-ink:#ffffff; --sel:#e6edfb;
+  --gold:#e3b23c; --gold-ink:#2b2005; --gold-soft:#fff4d6;
+  --go:#1c7f48; --go-ink:#ffffff; --go-soft:#e1f3e7;
+  --ok:#1b6e3a; --ok-soft:#e1f3e7; --bad:#b3261e; --bad-soft:#fbe5e3;
   --ring:#c4922a;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#150d1e; --surface:#1e1329; --surface-2:#190f23;
-    --ink:#efe8f5; --muted:#a99bb8; --line:#33224a;
-    --head:#2a1740; --head-ink:#ffffff; --head-muted:#bda8d3;
-    --accent:#7b4fb3; --accent-ink:#ffffff; --sel:#2b1c42;
-    --gold:#e3b24a; --gold-ink:#2a1d02; --gold-soft:#2b2414;
-    --ok:#e3b24a; --ok-soft:#2b2414; --bad:#d1b3f0; --bad-soft:#2e1f45;
-    --ring:#e3b24a; color-scheme:dark;
+    --bg:#0a1226; --surface:#111b38; --surface-2:#16224a;
+    --ink:#e9eefb; --muted:#9aa8c8; --line:#243259;
+    --head:#071433; --head-ink:#ffffff; --head-muted:#b9c6e6;
+    --accent:#3c62c8; --accent-ink:#ffffff; --sel:#16224a;
+    --gold:#e3b23c; --gold-ink:#2b2005; --gold-soft:#2a2410;
+    --go:#2a9a5a; --go-ink:#ffffff; --go-soft:#12301f;
+    --ok:#74d494; --ok-soft:#15301f; --bad:#ff9a92; --bad-soft:#3a1816;
+    --ring:#e3b23c; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#150d1e; --surface:#1e1329; --surface-2:#190f23;
-  --ink:#efe8f5; --muted:#a99bb8; --line:#33224a;
-  --head:#2a1740; --head-ink:#ffffff; --head-muted:#bda8d3;
-  --accent:#7b4fb3; --accent-ink:#ffffff; --sel:#2b1c42;
-  --gold:#e3b24a; --gold-ink:#2a1d02; --gold-soft:#2b2414;
-  --ok:#e3b24a; --ok-soft:#2b2414; --bad:#d1b3f0; --bad-soft:#2e1f45;
-  --ring:#e3b24a; color-scheme:dark;
+  --bg:#0a1226; --surface:#111b38; --surface-2:#16224a;
+  --ink:#e9eefb; --muted:#9aa8c8; --line:#243259;
+  --head:#071433; --head-ink:#ffffff; --head-muted:#b9c6e6;
+  --accent:#3c62c8; --accent-ink:#ffffff; --sel:#16224a;
+  --gold:#e3b23c; --gold-ink:#2b2005; --gold-soft:#2a2410;
+  --go:#2a9a5a; --go-ink:#ffffff; --go-soft:#12301f;
+  --ok:#74d494; --ok-soft:#15301f; --bad:#ff9a92; --bad-soft:#3a1816;
+  --ring:#e3b23c; color-scheme:dark;
 }
 [hidden]{display:none!important}
 *{box-sizing:border-box}
@@ -77,12 +80,28 @@ ul,ol{padding:0;list-style:none}
 .row{display:grid;grid-template-columns:46px minmax(0,1fr);align-items:center;gap:8px;padding:9px 0;scroll-margin-top:90px}
 .num{font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted)}
 .opts{display:flex;gap:8px}
-.opt{flex:1 1 0;min-width:0;height:46px;border:1.5px solid var(--line);background:var(--surface-2);border-radius:10px;font-weight:800;letter-spacing:.02em;transition:background .12s,border-color .12s}
+.opt{flex:1 1 0;min-width:0;height:46px;border:1.5px solid var(--line);background:var(--surface);border-radius:10px;font-weight:800;letter-spacing:.02em;transition:background .12s,border-color .12s}
 .opt:hover{border-color:var(--muted)}
 .opt[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.txt{width:100%;height:46px;padding:0 14px;border:1.5px solid var(--line);background:var(--surface-2);border-radius:10px}
+.txt{width:100%;height:46px;padding:0 14px;border:1.5px solid var(--line);background:var(--surface);border-radius:10px}
 .txt:focus{border-color:var(--accent)}
 .txt.has{border-color:var(--accent);background:var(--sel)}
+.tp{grid-column:2;width:100%;height:36px;padding:0 12px;border:1px dashed var(--line);background:transparent;border-radius:8px;font-size:.88rem}
+.tp:focus{border-style:solid;border-color:var(--gold)}
+.tp.has{border-style:solid;border-color:var(--gold);background:var(--gold-soft)}
+.bulk{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+.bulk b{display:block;margin-bottom:8px;font-size:.92rem}
+.bulk-r{display:flex;gap:8px;flex-wrap:wrap}
+.bulk input{height:40px;padding:0 10px;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;min-width:0}
+.bulk .n{width:64px}.bulk .nm{flex:1 1 140px}
+.bulk button{height:40px;padding:0 14px;border:0;border-radius:8px;background:var(--gold);color:var(--gold-ink);font-weight:700}
+.bulk small{display:block;margin-top:6px;color:var(--muted)}
+/* kalit varag'i: belgilangan kalit yashil */
+.key .opt[aria-pressed="true"]{background:var(--go);border-color:var(--go);color:var(--go-ink)}
+.key .opt[aria-pressed="true"]::after{content:" ✓"}
+.key .txt.has{border-color:var(--go);background:var(--go-soft)}
+.key .cell.on{background:var(--go);border-color:var(--go);color:var(--go-ink)}
+.key .bar i{background:var(--go)}
 
 .essay{margin-top:26px;padding:16px;border:1.5px dashed var(--gold);background:var(--gold-soft);border-radius:12px}
 .essay label{display:block;font-weight:700;margin-bottom:8px}
@@ -176,6 +195,17 @@ ul,ol{padding:0;list-style:none}
     <section class="card list">
       <h1 class="title" id="ttl">Test savollari</h1>
       <p class="sub" id="sub"></p>
+      <div class="bulk" id="bulk" hidden>
+        <b>📚 Mavzuni bir necha savolga birdan belgilash (ixtiyoriy)</b>
+        <div class="bulk-r">
+          <input class="n" id="b-from" type="text" inputmode="numeric" placeholder="dan" aria-label="Boshlang‘ich savol">
+          <input class="n" id="b-to" type="text" inputmode="numeric" placeholder="gacha" aria-label="Oxirgi savol">
+          <input class="nm" id="b-name" type="text" list="tl" maxlength="40" placeholder="Mavzu nomi" aria-label="Mavzu nomi" autocomplete="off">
+          <button type="button" id="b-go">Qo‘llash</button>
+        </div>
+        <small id="b-msg">Har bir savol ostida mavzuni alohida ham yozishingiz mumkin.</small>
+      </div>
+      <datalist id="tl"></datalist>
       <div id="rows"></div>
       <div class="essay" id="essay-box">
         <label for="essay">Esse ballingizni kiriting <span class="hint" style="font-weight:500;color:var(--muted)">(75 ballik shkalada)</span></label>
@@ -236,9 +266,9 @@ ul,ol{padding:0;list-style:none}
   function $(s) { return document.querySelector(s); }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
-  var A = {}, essay = '', sent = false;
-  function load() { try { var o = JSON.parse(localStorage.getItem(LS)); if (o) { A = o.A || {}; essay = o.essay || ''; sent = MODE === 'answer' && !!o.sent; } } catch (e) {} }
-  function save() { try { localStorage.setItem(LS, JSON.stringify({ A: A, essay: essay, sent: sent })); } catch (e) {} }
+  var A = {}, T = {}, essay = '', sent = false;
+  function load() { try { var o = JSON.parse(localStorage.getItem(LS)); if (o) { A = o.A || {}; T = o.T || {}; essay = o.essay || ''; sent = MODE === 'answer' && !!o.sent; } } catch (e) {} }
+  function save() { try { localStorage.setItem(LS, JSON.stringify({ A: A, T: T, essay: essay, sent: sent })); } catch (e) {} }
   function wipe() { try { localStorage.removeItem(LS); } catch (e) {} }
 
   function renderRows() {
@@ -260,10 +290,22 @@ ul,ol{padding:0;list-style:none}
       } else {
         h += '<input class="txt' + (A[it.id] ? ' has' : '') + '" data-id="' + it.id + '" type="text" maxlength="60" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + ph + '" aria-label="' + it.id + '-savol javobi" value="' + esc(A[it.id] || '') + '">';
       }
+      if (MODE === 'key') h += '<input class="tp' + (T[it.id] ? ' has' : '') + '" data-tid="' + it.id + '" type="text" maxlength="40" list="tl" autocomplete="off" placeholder="Mavzu (ixtiyoriy)" aria-label="' + it.id + '-savol mavzusi" value="' + esc(T[it.id] || '') + '">';
       h += '</div>';
     });
     $('#rows').innerHTML = h;
+    fillList();
     $('#essay').value = essay;
+  }
+
+  function fillList() {
+    var seen = {}, h = '';
+    Object.keys(T).forEach(function (k) { var v = T[k]; if (v && !seen[v]) { seen[v] = 1; h += '<option value="' + esc(v) + '">'; } });
+    $('#tl').innerHTML = h;
+  }
+  function setTopic(id, v) {
+    v = (v || '').trim().slice(0, 40);
+    if (v) T[id] = v; else delete T[id];
   }
 
   function renderPanel() {
@@ -288,6 +330,12 @@ ul,ol{padding:0;list-style:none}
   });
   $('#rows').addEventListener('input', function (e) {
     var t = e.target;
+    if (t.classList.contains('tp')) {
+      setTopic(t.dataset.tid, t.value);
+      t.classList.toggle('has', !!T[t.dataset.tid]);
+      save();
+      return;
+    }
     if (!t.classList.contains('txt')) return;
     if (t.value.trim() === '') delete A[t.dataset.id]; else A[t.dataset.id] = t.value;
     t.classList.toggle('has', !!A[t.dataset.id]);
@@ -354,7 +402,14 @@ ul,ol{padding:0;list-style:none}
     closeModal();
     var payload;
     if (MODE === 'key') {
+      var tl = [], tp = {};
+      ITEMS.forEach(function (it) {
+        var v = T[it.id]; if (!v) return;
+        var ix = tl.indexOf(v); if (ix < 0) { tl.push(v); ix = tl.length - 1; }
+        tp[it.id] = ix;
+      });
       payload = { m: 'key', t: TPL, n: NAME, a: A };
+      if (tl.length) { payload.tl = tl; payload.tp = tp; }
       wipe();
     } else {
       payload = { c: CODE, a: A, e: HAS_ESSAY && essay !== '' ? parseInt(essay, 10) : null };
@@ -382,10 +437,20 @@ ul,ol{padding:0;list-style:none}
 
   /* ---------- sarlavhalar ---------- */
   if (MODE === 'key') {
+    document.body.classList.add('key');
     $('#ttl').textContent = 'Kalit varag‘i';
     $('#sub').innerHTML = 'Test: <b>' + esc(NAME) + '</b> · ' + ITEMS.length + ' ta savol · to‘g‘ri javoblarni belgilang';
     $('#finish').textContent = '✓ Kalitlarni saqlash';
     $('#top-t').textContent = 'Test yaratish';
+    $('#bulk').hidden = false;
+    $('#b-go').addEventListener('click', function () {
+      var a = parseInt($('#b-from').value, 10), b = parseInt($('#b-to').value, 10) || a, nm = $('#b-name').value.trim(), msg = $('#b-msg');
+      if (!(a >= 1) || !nm || b < a || b > ITEMS.length) { msg.textContent = '1 dan ' + ITEMS.length + ' gacha raqamlarni va mavzu nomini kiriting.'; return; }
+      for (var k = a - 1; k < b; k++) setTopic(ITEMS[k].id, nm);
+      save(); renderRows(); renderPanel();
+      msg.textContent = '✓ ' + a + '–' + b + '-savollar: ' + nm.slice(0, 40);
+      $('#b-from').value = String(b + 1); $('#b-to').value = ''; $('#b-name').value = '';
+    });
   } else {
     $('#sub').innerHTML = 'Test kodi: <b>' + (CODE || '—') + '</b> · ' + ITEMS.length + ' ta savol';
   }
